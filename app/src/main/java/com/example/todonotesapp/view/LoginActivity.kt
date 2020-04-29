@@ -1,4 +1,4 @@
-package com.example.todonotesapp
+package com.example.todonotesapp.view
 
 import android.content.Context
 import android.content.Intent
@@ -8,7 +8,9 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_login.*
+import com.example.todonotesapp.utils.AppConstant
+import com.example.todonotesapp.utils.PrefConstant
+import com.example.todonotesapp.R
 
 class LoginActivity : AppCompatActivity() {
     lateinit var editTextFullName: EditText
@@ -36,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
                 val fullName = editTextFullName.text.toString()
                 val userName = editTextUserName.text.toString()
                 if(fullName.isNotEmpty() && userName.isNotEmpty()){
-                        val intent = Intent(this@LoginActivity,MyNotesActivity::class.java)
+                        val intent = Intent(this@LoginActivity, MyNotesActivity::class.java)
                         intent.putExtra(AppConstant.FULL_NAME,fullName)
                     startActivity(intent)
                     saveFullName(fullName)

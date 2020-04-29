@@ -1,16 +1,21 @@
 package com.example.todonotesapp.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.appcompat.view.menu.MenuView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todonotesapp.R
 import com.example.todonotesapp.clickListeners.ItemClickListener
-import com.example.todonotesapp.model.Notes
+import com.example.todonotesapp.db.Notes
+
 
 class NotesAdapter(val  list:List<Notes>, val itemClickListener: ItemClickListener) :RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
+    val TAG ="NotesAdapter"
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesAdapter.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.notes_adapter_layout,parent,false)
         return ViewHolder(view)
@@ -26,15 +31,25 @@ class NotesAdapter(val  list:List<Notes>, val itemClickListener: ItemClickListen
         val description = notes.description
         holder.textViewTitle.text = title
         holder.textViewDescription.text = description
+        holder.checkBoxMarkStatus.isChecked = notes.isTaskCompleted
         holder.itemView.setOnClickListener(object : View.OnClickListener{
             override fun onClick(v: View?) {
                 itemClickListener.onClick(notes)
             }
 
         })
+        holder.checkBoxMarkStatus.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener  {
+            override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+                notes.isTaskCompleted = isChecked
+                Log.d(TAG,isChecked.toString())
+                itemClickListener.onUpdate(notes)
+            }
+        })
+
     }
     inner class ViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
         val textViewTitle :TextView = itemView.findViewById(R.id.textViewTitle)
         val textViewDescription:TextView = itemView.findViewById(R.id.textViewDescription)
+        val checkBoxMarkStatus :CheckBox = itemView.findViewById(R.id.checkboxMarkStatus)
     }
 }
