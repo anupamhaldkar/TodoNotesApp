@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.todonotesapp.utils.AppConstant
 import com.example.todonotesapp.utils.PrefConstant
 import com.example.todonotesapp.R
+import com.example.todonotesapp.utils.StoreSession
 
 class LoginActivity : AppCompatActivity() {
     lateinit var editTextFullName: EditText
@@ -26,7 +27,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupSharedPreference() {
-        sharedPreferences = getSharedPreferences(PrefConstant.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
+        //sharedPreferences = getSharedPreferences(PrefConstant.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
+        StoreSession.init(this)
     }
 
     private fun bindViews() {
@@ -44,9 +46,7 @@ class LoginActivity : AppCompatActivity() {
                     saveFullName(fullName)
                     saveLoginState()
                 }
-                else {
 
-                }
             }
 
         }
@@ -54,14 +54,16 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun saveLoginState() {
-        editor = sharedPreferences.edit()
-        editor.putBoolean(PrefConstant.IS_LOGGED_IN,true)
-        editor.apply()
+       // editor = sharedPreferences.edit()
+       // editor.putBoolean(PrefConstant.IS_LOGGED_IN,true)
+       // editor.apply()
+        StoreSession.write(PrefConstant.IS_LOGGED_IN,true)
     }
 
     private fun saveFullName(fullName: String) {
-        editor  = sharedPreferences.edit()
-        editor.putString((PrefConstant.FULL_NAME),fullName)
-        editor.apply()
+        //editor  = sharedPreferences.edit()
+        //editor.putString((PrefConstant.FULL_NAME),fullName)
+        //editor.apply()
+        StoreSession.write(PrefConstant.FULL_NAME,fullName)
     }
 }
