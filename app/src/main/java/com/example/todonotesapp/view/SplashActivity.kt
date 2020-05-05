@@ -38,8 +38,8 @@ class SplashActivity : AppCompatActivity() {
 
                     // Log and toast
 
-                    Log.d("SplashActivity", token)
-                    Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
+                   // Log.d("SplashActivity", token)
+                    Toast.makeText(baseContext, token, Toast.LENGTH_SHORT)
                 })
     }
 

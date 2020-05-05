@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.todonotesapp.utils.AppConstant
 import com.example.todonotesapp.utils.PrefConstant
@@ -45,6 +46,10 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(intent)
                     saveFullName(fullName)
                     saveLoginState()
+                }
+                else {
+                    Toast.makeText(baseContext,"Enter Both Answer to Continue",Toast.LENGTH_LONG).show()
+
                 }
 
             }

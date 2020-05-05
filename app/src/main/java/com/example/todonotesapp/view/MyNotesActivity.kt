@@ -35,31 +35,37 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.concurrent.TimeUnit
 
 class MyNotesActivity : AppCompatActivity() {
-    var fullName: String? = null
+    var fullName: String = ""
     lateinit var fabAddNotes: FloatingActionButton
     lateinit var sharedPreferences: SharedPreferences
     lateinit var recyclerView: RecyclerView
     var notesList = ArrayList<Notes>()
     val TAG = "MyNotesActivity"
     val ADD_NOTES_CODE = 100
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_notes)
-        bindViews()
         setupSharedPreferences()
+        bindViews()
         getIntentData()
         getDataFromDatabase()
-        supportActionBar?.title = fullName
-        fabAddNotes.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                //setupDialogBox()
-                val intent = Intent(this@MyNotesActivity,AddNotesActivity::class.java)
-                startActivityForResult(intent,ADD_NOTES_CODE)
-            }
-
-        })
+        setupActionBar()
+        clickListeners()
         setupRecyclerView()
         setupWorkManager()
+    }
+
+
+    private fun getIntentData() {
+        val intent = intent
+        if(intent.hasExtra(AppConstant.FULL_NAME)){
+            fullName = intent.getStringExtra(AppConstant.FULL_NAME)
+        }
+
+        if(fullName.isNullOrEmpty()){
+            fullName = StoreSession.readString(PrefConstant.FULL_NAME)!!
+        }
     }
 
     private fun setupWorkManager() {
@@ -81,42 +87,31 @@ class MyNotesActivity : AppCompatActivity() {
         notesList.addAll(notesDao.getAll())
     }
 
-    private fun setupDialogBox() {
-        val view = LayoutInflater.from(this@MyNotesActivity).inflate(R.layout.add_notes_dialog_layout,null)
-        val editTextTitle = view.findViewById<EditText>(R.id.editTextTitle)
-        val editTextDescription = view.findViewById<EditText>(R.id.editTextDescription)
-        val buttonSubmit = view.findViewById<Button>(R.id.buttonSubmit)
-        val dialog = AlertDialog.Builder(this)
-                .setView(view)
-                .setCancelable(false)
-                .create()
-        buttonSubmit.setOnClickListener(object: View.OnClickListener{
+    private fun setupSharedPreferences() {
+        //sharedPreferences = getSharedPreferences(PrefConstant.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
+        StoreSession.init(this)
+    }
+
+    private fun bindViews() {
+        fabAddNotes = findViewById(R.id.fabAddNotes)
+        recyclerView = findViewById(R.id.recyclerViewNotes)
+    }
+
+    private fun clickListeners() {
+        fabAddNotes.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                val title = editTextTitle.text.toString()
-                val description = editTextDescription.text.toString()
-                if(title.isNotEmpty() && description.isNotEmpty()){
-                    val notes = Notes(title = title,description = description)
-                    notesList.add(notes)
-                    addNotesToDb( notes)
-                }
-                else {
-                    Toast.makeText(this@MyNotesActivity, "Title or description can't be empty", Toast.LENGTH_SHORT).show()
-                }
-
-
-                dialog.hide()
+                //setupDialogBox()
+                val intent = Intent(this@MyNotesActivity,AddNotesActivity::class.java)
+                startActivityForResult(intent,ADD_NOTES_CODE)
             }
 
         })
-        dialog.show()
     }
 
-    private fun addNotesToDb(notes: Notes) {
-        //insert notes in Db
-        val notesApp = applicationContext as NotesApp
-        val notesDao = notesApp.getNotesDb().notesDao()
-        notesDao.insert(notes)
-
+    private fun setupActionBar() {
+        if(supportActionBar!=null) {
+            supportActionBar?.title = "Howdy, "+fullName
+        }
     }
 
     private fun setupRecyclerView() {
@@ -129,7 +124,7 @@ class MyNotesActivity : AppCompatActivity() {
             }
 
             override fun onUpdate(notes: Notes) {
-            Log.d(TAG,notes.isTaskCompleted.toString())
+                Log.d(TAG,notes.isTaskCompleted.toString())
                 val notesApp = applicationContext as NotesApp
                 val notesDao = notesApp.getNotesDb().notesDao()
                 notesDao.updateNotes(notes)
@@ -140,27 +135,6 @@ class MyNotesActivity : AppCompatActivity() {
         linearLayoutManager.orientation = RecyclerView.VERTICAL
         recyclerView.layoutManager = linearLayoutManager
         recyclerView.adapter = notesAdapter
-    }
-
-    private fun bindViews() {
-        fabAddNotes = findViewById(R.id.fabAddNotes)
-        recyclerView = findViewById(R.id.recyclerViewNotes)
-    }
-
-    private fun setupSharedPreferences() {
-        //sharedPreferences = getSharedPreferences(PrefConstant.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
-        StoreSession.init(this)
-    }
-
-    private fun getIntentData() {
-        val intent = intent
-        if(intent.hasExtra(AppConstant.FULL_NAME)){
-            fullName = intent.getStringExtra(AppConstant.FULL_NAME)
-        }
-
-        if(fullName.isNullOrEmpty()){
-            fullName = StoreSession.readString(PrefConstant.FULL_NAME)
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -177,6 +151,14 @@ class MyNotesActivity : AppCompatActivity() {
         }
     }
 
+    private fun addNotesToDb(notes: Notes) {
+        //insert notes in Db
+        val notesApp = applicationContext as NotesApp
+        val notesDao = notesApp.getNotesDb().notesDao()
+        notesDao.insert(notes)
+
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.menu,menu)
@@ -185,10 +167,9 @@ class MyNotesActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item?.itemId==R.id.Blog){
-            Log.d(TAG,"Click Successful")
-            val intent = Intent(this@MyNotesActivity,BlogActivity::class.java)
-            startActivity(intent)
+        when (item?.itemId){
+             R.id.Blog -> startActivity(Intent(this@MyNotesActivity,BlogActivity::class.java))
+
         }
         return super.onOptionsItemSelected(item)
     }

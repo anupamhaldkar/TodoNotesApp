@@ -26,6 +26,8 @@
         android:text="Next"
         android:textColor="@android:color/background_dark"
         android:id="@+id/textViewNext"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,8 +36,8 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:layout_marginBottom="32dp"
         android:src="@drawable/ic_document"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
@@ -49,7 +51,7 @@
         android:layout_marginTop="24dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
 
-        android:text="Create your record/task "
+        android:text="Create your Checklist / task "
         android:textColor="@android:color/background_dark"
         android:textSize="18dp"
         app:layout_constraintEnd_toEndOf="parent"
