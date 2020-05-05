@@ -56,12 +56,19 @@ class AddNotesActivity : AppCompatActivity() {
         })
         buttonSubmit.setOnClickListener(object : View.OnClickListener{
             override fun onClick(v: View?) {
-                val intent = Intent()
-                intent.putExtra(AppConstant.TITLE,editTextTitle.text.toString())
-                intent.putExtra(AppConstant.DESCRIPTION,editTextDescription.text.toString())
-                intent.putExtra(AppConstant.IMAGE_PATH,picturePath)
-                setResult(Activity.RESULT_OK,intent)
-                finish()
+                val title = editTextTitle.text.toString()
+                val description = editTextDescription.text.toString()
+                if(title.isNotEmpty() && description.isNotEmpty()) {
+                    val intent = Intent()
+                    intent.putExtra(AppConstant.TITLE, editTextTitle.text.toString())
+                    intent.putExtra(AppConstant.DESCRIPTION, editTextDescription.text.toString())
+                    intent.putExtra(AppConstant.IMAGE_PATH, picturePath)
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+                }
+                else {
+                    Toast.makeText(this@AddNotesActivity, "Title or description can't be empty", Toast.LENGTH_SHORT).show()
+                }
             }
 
         })
